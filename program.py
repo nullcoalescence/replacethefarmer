@@ -1,8 +1,13 @@
+# TODO
+# global logging switch/formatted logs
+# modules/seperate file imports
+
 # global config
-waterThreshold = 0
+waterThreshold = 0.005 # needs to be small enough that we aren't constantly running out of water, but still water shit frequenty
 
 #Functions
 # reliably rotates thru available plants to give us something new to plant
+# TODO utilize lookup tables once lists unlocked
 def determine_next_plant(currentPlant) -> Entities:
 	if currentEntity == Entities.Bush:
 		return Entities.Grass
@@ -11,7 +16,7 @@ def determine_next_plant(currentPlant) -> Entities:
 	elif currentEntity == Entities.Carrot:
 		# Trees grow slower right next to eachother
 		# So only grow trees on even coords
-		if get_pos_x() % 2 == 0:
+		if (get_pos_x() % 2 == 0) and (get_pos_y() % 2 == 0):
 			return Entities.Tree
 		else:
 			return Entities.Bush
@@ -21,6 +26,8 @@ def determine_next_plant(currentPlant) -> Entities:
 		quick_print("Unrecognized entity!")
 
 # encapsulates logic for planting
+# TODO logging
+# TODO build a mapping table once lists or a better data structure unlocked
 def plant_next(toPlant):
 	if toPlant == Entities.Bush:
 		plant(toPlant)
@@ -29,6 +36,8 @@ def plant_next(toPlant):
 		plant(toPlant)
 	elif toPlant ==  Entities.Carrot:
 		till()
+		plant(toPlant)
+	elif toPlant == Entities.Tree:
 		plant(toPlant)
 	else:
 		plant(Entities.Bush)
@@ -76,3 +85,6 @@ while True:
 
 		# horizontal processing
 		move(East)
+	# map processing done
+	# lets set a hat
+	change_hat(Hats.Tree_Hat)
