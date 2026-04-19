@@ -11,7 +11,7 @@ def determine_next_plant(currentPlant) -> Entities:
 	elif currentEntity == Entities.Carrot:
 		# Trees grow slower right next to eachother
 		# So only grow trees on even coords
-		if get_pos_x % 2 == 0:
+		if get_pos_x() % 2 == 0:
 			return Entities.Tree
 		else:
 			return Entities.Bush
