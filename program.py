@@ -3,7 +3,8 @@
 # modules/seperate file imports
 
 # global config
-waterThreshold = 0.005 # needs to be small enough that we aren't constantly running out of water, but still water shit frequenty
+waterThreshold = 0.3 # needs to be small enough that we aren't constantly running out of water, but still water shit frequenty
+outputSeperator = "####################"
 
 #Functions
 # reliably rotates thru available plants to give us something new to plant
@@ -21,6 +22,8 @@ def determine_next_plant(currentPlant) -> Entities:
 		else:
 			return Entities.Bush
 	elif currentEntity == Entities.Tree:
+		return Entities.Pumpkin
+	elif currentEntity == Entities.Pumpkin:
 		return Entities.Bush
 	else:
 		quick_print("Unrecognized entity!")
@@ -28,6 +31,7 @@ def determine_next_plant(currentPlant) -> Entities:
 # encapsulates logic for planting
 # TODO logging
 # TODO build a mapping table once lists or a better data structure unlocked
+# TODO actually have a strategy for planting pumpkins in squares - maybe unlock lists first
 def plant_next(toPlant):
 	if toPlant == Entities.Bush:
 		plant(toPlant)
@@ -39,6 +43,8 @@ def plant_next(toPlant):
 		plant(toPlant)
 	elif toPlant == Entities.Tree:
 		plant(toPlant)
+	elif toPlant == Entities.Pumpkin:
+		plant(toPlant) 
 	else:
 		plant(Entities.Bush)
 
@@ -49,6 +55,8 @@ def water():
 		quick_print("water level less than threshhold, watering")
 		quick_print(currentWaterLevel)
 		use_item(Items.Water)
+
+# TODO fertilizer
 
 #Main loop
 while True:
@@ -65,15 +73,23 @@ while True:
 			# harvest if possible
 			if can_harvest():
 				harvest()
+				till()
 
 				# plant something new each time based on the last thing harvested.
-				nextPlant = determine_next_plant(currentEntity)
-				plant_next(nextPlant)
+				# TODO disabling this for mono culture
+				#nextPlant = determine_next_plant(currentEntity)
+				#plant_next(nextPlant)
+				plant_next(Entities.Pumpkin)
 
 			else:
 				# somehow something got removed and is no plant there. put a bush there
 				if currentEntity == None:
-					plant(Entities.Bush)
+					till()
+					plant(Entities.Pumpkin)
+				# account for dead pumpkins - replant a pumpkin
+				if currentEntity == Entities.Dead_Pumpkin:
+					till()
+					plant(Entities.Pumpkin)
 			
 			# maintain a low level of water but water
 			water()
@@ -81,7 +97,7 @@ while True:
 			# when done, move north
 			move(North)
 				
-			quick_print("___________")
+			quick_print(outputSeperator)
 
 		# horizontal processing
 		move(East)
